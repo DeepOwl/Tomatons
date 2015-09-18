@@ -10,6 +10,7 @@ public class AddOn {
     Tomaton.Slot slot;
     String name;
     List<StatModifier> stats = new ArrayList<StatModifier>();
+    
     public AddOn(String name, Tomaton.Slot slot){
         this.name = name;
         this.slot= slot;

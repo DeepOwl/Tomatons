@@ -18,6 +18,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -28,8 +30,13 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 
-public class Launcher extends Application{
+public class Launcher extends Application implements StatusLogger, TomSelector{
 	TextArea tom;
+	Game game;
+	TextArea status;
+	TomPane tomPane;
+	PartyPane partyPane;
+	ListView<Unit> list;
 	@Override
 	public void start(Stage stage) throws Exception {
 		// TODO Auto-generated method stub
@@ -39,16 +46,33 @@ public class Launcher extends Application{
         Scene scene = new Scene(border);
         Button testBtn = new Button("test");
         border.setTop(testBtn);
-        TextArea status = new TextArea();
+        status = new TextArea();
         tom = new TextArea();
+        TabPane tabs = new TabPane();
         
         border.setBottom(status);
-        Game game = new Game();
+        game = new Game();
+        game.setStatusLogger(this);
         game.startGame();
         border.setLeft(tom);
-        TomPane tomPane = new TomPane(game);
-        border.setCenter(tomPane);
-        ListView<Unit> list = new ListView<Unit>();
+        tomPane = new TomPane(game);
+        Tab equipTab = new Tab();
+        equipTab.setContent(tomPane);
+        equipTab.setText("Equip");
+        tabs.getTabs().add(equipTab);
+        
+        partyPane = new PartyPane(game, this);
+        Tab partyTab = new Tab();
+        partyTab.setContent(partyPane);
+        partyTab.setText("Party");
+        tabs.getTabs().add(partyTab);
+        
+        //questPane = new QuestPane(game);
+        //Tab questTab = new Tab();
+        //questTab.setContent(questPane);
+        
+        border.setCenter(tabs);
+        list = new ListView<Unit>();
         list.setCellFactory(new Callback<ListView<Unit>, 
                 ListCell<Unit>>() {
                     @Override 
@@ -64,6 +88,7 @@ public class Launcher extends Application{
                     public void changed(ObservableValue<? extends Unit> ov, 
                         Unit old_val, Unit new_val) {
                     	updateCenterPanel(new_val);
+                    	tomPane.updateFocus((Tomaton)new_val);
                            	// label.setText(new_val);
                             //label.setTextFill(Color.web(new_val));
                     	
@@ -112,12 +137,21 @@ public class Launcher extends Application{
             //Rectangle rect = new Rectangle(100, 20);
             if (item != null) {
             	setText(item.getName() + " HP: " + item.getStat(Unit.Stat.HP));
-            }
+            } else setText(null);
         }
     }
+    
+    public void logStatus(String message){
+    	status.appendText(message + "\n");
+    }
+
   public static void main(String[] args) 
     {
         launch(args);
     }
+	@Override
+	public Tomaton getTomaton() {
+		return (Tomaton) list.getSelectionModel().getSelectedItem();
+	}
 }
 

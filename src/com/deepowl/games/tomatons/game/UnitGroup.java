@@ -8,11 +8,15 @@ import java.util.List;
  */
 public class UnitGroup {
     List<Unit> units = new ArrayList<Unit>();
-
+    String name = "NO NAME GROUP";
     public UnitGroup() {
     }
 
-    public List<Unit> getUnits() {
+    public UnitGroup(String text) {
+		name = text;
+	}
+
+	public List<Unit> getUnits() {
         return units;
     }
 
@@ -40,5 +44,10 @@ public class UnitGroup {
         }
         return false;
     }
+
+	public String getName() {
+		// TODO Auto-generated method stub
+		return name;
+	}
 
 }

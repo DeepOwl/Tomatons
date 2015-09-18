@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.deepowl.games.tomatons.game.Equipment.EquipmentType;
 import com.deepowl.games.tomatons.game.Tomaton.Slot;
 
 /**
@@ -84,7 +85,7 @@ public class Battle {
     	if(isOver() && isPlayerWin()){
     		List<StatEffect> effects = new ArrayList<StatEffect>();
     		effects.add(new StatEffect(Unit.Stat.STR, 2));
-    		Equipment leftArm = new Equipment("BlasterArm", Slot.LEFT, effects);
+    		Equipment leftArm = new Equipment("BlasterArm", EquipmentType.ARM, effects);
     		ret.add(leftArm);
     	}
     	return ret;
